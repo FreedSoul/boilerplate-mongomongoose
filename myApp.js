@@ -70,10 +70,6 @@ const findAndUpdate = (personName, done) => {
   Person.findOneAndUpdate({ name: personName },{ age : ageToSet }, {new : true}, (err, person) => {
     if (err) return console.log(err)
     done(null, person);
-  
-    // person.save(function(err,updatedPerson){
-      // if(err) return console.log(err)
-    // })
   })
 };
 
@@ -96,8 +92,16 @@ const removeManyPeople = (done) => {
 
 const queryChain = (done) => {
   const foodToSearch = "burrito";
-
-  done(null /*, data*/);
+  Person.find({favoriteFoods: {$all:[foodToSearch]} })
+  .sort({ name:'asc' })
+  .limit(2)
+  .select('-age')
+  .exec(
+    function(error,data){
+    if (error) return console.log(error)
+    done(null, data);
+    }
+  )
 };
 
 /** **Well Done !!**
